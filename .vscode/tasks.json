@@ -53,7 +53,10 @@
                     "-c",
                     "'make run'"
                 ]
-            }
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
         },
         {
             "label": "clean",
