@@ -126,6 +126,7 @@ int main(){
 	//位置值0
     glEnableVertexAttribArray(0);
 
+    //颜色属性，绑定
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
     //位置值1
     glEnableVertexAttribArray(1);
