@@ -1,3 +1,4 @@
+//使用一个uniform变量作为mix函数的第三个参数来改变两个纹理可见度，使用上和下键来改变箱子或笑脸的可见度
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
@@ -10,6 +11,9 @@
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 //处理输入
 void processInput(GLFWwindow *window);
+
+float mixValue = 0.2f;
+
 int main()
 {
     glfwInit(); //初始化GLFW
@@ -42,7 +46,7 @@ int main()
     //注册窗口大小改变的回调函数
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
-    Shader ourShader("src/textures/shader.vs", "src/textures/textures_exercise1.fs");
+    Shader ourShader("src/textures/shader.vs", "src/textures/textures_exercise4.fs");
 
     //位置数据会被存储为32位（4字节）浮点值
     float vertices[] = {
@@ -170,10 +174,12 @@ int main()
         glBindTexture(GL_TEXTURE_2D, texture[0]);
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, texture[1]);
+        
+        ourShader.setFloat("per",mixValue); 
+        //激活程序对象,之前激活过
+        //ourShader.use();
 
-        //激活程序对象
-        ourShader.use();
-
+        
         //打算绘制时绑定VAO
         //绑定VAO的同时也会自动绑定EBO。所以不用每次渲染一个物体都要绑定EBO
         glBindVertexArray(VAO);
@@ -207,8 +213,18 @@ void framebuffer_size_callback(GLFWwindow *window, int width, int height)
 }
 
 void processInput(GLFWwindow *window)
-{
+{   
+   
     //按下esc，关闭GLFW,下次while循环会失败，程序关闭
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+    if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
+    if(glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+        mixValue += 0.001f;
+        if(mixValue >= 1.0f)
+            mixValue = 1.0f;
+        
+    if(glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+        mixValue -= 0.001f;
+        if(mixValue <= 0.0f)
+            mixValue = 0.0f;
 }
