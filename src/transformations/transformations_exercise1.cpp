@@ -47,7 +47,7 @@ int main()
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
     Shader ourShader("src/transformations/shader.vs", "src/transformations/shader.fs");
-    Shader ourShader1("src/transformations/shader.vs", "src/transformations/shader.fs");
+    
      
     //位置数据会被存储为32位（4字节）浮点值
     float vertices[] = {
@@ -65,42 +65,18 @@ int main()
     //VBO：顶点缓冲对象
     //VAO：顶点数组对象
     //EBO：索引缓冲对象
-    unsigned int VBO[2], VAO[2], EBO[2];
-    glGenVertexArrays(1, &VAO[0]);
-    glGenBuffers(1, &VBO[0]);
-    glGenBuffers(1, &EBO[0]);
+    unsigned int VBO, VAO, EBO;
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &VBO);
+    glGenBuffers(1, &EBO);
 
-    glBindVertexArray(VAO[0]);
+    glBindVertexArray(VAO);
 
-    glBindBuffer(GL_ARRAY_BUFFER, VBO[0]);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO[0]);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-    // 3. 设置顶点属性指针
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)0);
-    glEnableVertexAttribArray(0);
-
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
-
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(6 * sizeof(float)));
-    glEnableVertexAttribArray(2);
-
-
-    glGenVertexArrays(1, &VAO[1]);
-    glGenBuffers(1, &VBO[1]);
-    glGenBuffers(1, &EBO[1]);
-
-    glBindVertexArray(VAO[1]);
-
-    glBindBuffer(GL_ARRAY_BUFFER, VBO[1]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO[1]);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
 
     // 3. 设置顶点属性指针
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)0);
@@ -176,9 +152,7 @@ int main()
     glUniform1i(glGetUniformLocation(ourShader.ID, "texture1"), 0); // 手动设置纹理单元
     ourShader.setInt("texture2", 1);                                // 或者使用着色器类设置
 
-    ourShader1.use();                                                // 不要忘记在设置uniform变量之前激活着色器程序！
-    glUniform1i(glGetUniformLocation(ourShader1.ID, "texture1"), 0); // 手动设置纹理单元
-    ourShader1.setInt("texture2", 1); 
+    
     //渲染循环
     //循环前检查GLFW是否被要求退出
     while (!glfwWindowShouldClose(window))
@@ -204,43 +178,31 @@ int main()
         glBindTexture(GL_TEXTURE_2D, texture[1]);
 
         
-        glm::mat4 trans = glm::mat4(1.0f);
-        //radians角度转弧度，返回一个包含多个变换的矩阵。
-        // trans = glm::rotate(trans, glm::radians(90.0f), glm::vec3(0.0, 0.0, 1.0));
-        // trans = glm::scale(trans, glm::vec3(0.5, 0.5, 0.5));
-        //先旋转再位移
-        trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
-        trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
-       
+        glm::mat4 transform = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
+        // first container
+        // ---------------
+        transform = glm::translate(transform, glm::vec3(0.5f, -0.5f, 0.0f));
+        transform = glm::rotate(transform, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
+        // get their uniform location and set matrix (using glm::value_ptr)
         unsigned int transformLoc = glGetUniformLocation(ourShader.ID, "transform");
-        //激活程序对象
-        ourShader.use();
-        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
+        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
 
-        glm::mat4 trans1 = glm::mat4(1.0f);
-        float scale = abs(sin(glfwGetTime()));
-        trans1 = glm::translate(trans1, glm::vec3(-0.5f, 0.5f, 0.0f));
-       
-        trans1 = glm::scale(trans1, glm::vec3(scale,scale,scale));
-       
-        unsigned int transformLoc1 = glGetUniformLocation(ourShader1.ID, "transform");
-        ourShader1.use();
-        glUniformMatrix4fv(transformLoc1, 1, GL_FALSE, glm::value_ptr(trans1));
-        
-        
-        
-        ourShader.use();
-        //打算绘制时绑定VAO
-        //绑定VAO的同时也会自动绑定EBO。所以不用每次渲染一个物体都要绑定EBO
-        glBindVertexArray(VAO[0]);
-
+        // with the uniform matrix set, draw the first container
+        glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
-        
-        ourShader1.use();
-        glBindVertexArray(VAO[1]);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        // second transformation
+        // ---------------------
+        transform = glm::mat4(1.0f); // reset it to identity matrix
+        transform = glm::translate(transform, glm::vec3(-0.5f, 0.5f, 0.0f));
+        float scaleAmount = sin(glfwGetTime());//会被翻转
+        transform = glm::scale(transform, glm::vec3(scaleAmount, scaleAmount, scaleAmount));
+        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, &transform[0][0]); // this time take the matrix value array's first element as its memory pointer value
 
+        // now with the uniform matrix being replaced with new transformations, draw it again.
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        
+        
 
         //检查并调用事件，交换缓冲
         //交换颜色缓冲（存储每个像素的颜色值的大缓冲），用来绘制
@@ -254,9 +216,9 @@ int main()
     }
 
     //绘制完再释放VAO
-    glDeleteVertexArrays(2, VAO);
-    glDeleteBuffers(2, VBO);
-    glDeleteBuffers(2, EBO);
+    glDeleteVertexArrays(1, &VAO);
+    glDeleteBuffers(1, &VBO);
+    glDeleteBuffers(1, &EBO);
 
     ourShader.shaderDelete();
     //释放/删除之前分配的所有资源。
