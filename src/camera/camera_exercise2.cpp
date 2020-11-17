@@ -255,7 +255,7 @@ int main()
         float camZ = cos(glfwGetTime()) * radius;
 
         
-        view = getLookAtMat(glm::vec3(camX, 0.0f, camZ),glm::vec3(0.0f, 0.0f, 0.0f),cameraUp);
+        view = getLookAtMat(cameraPos,cameraPos+cameraFront,cameraUp);
         //摄像机位置，目标位置，世界空间中的上向量
         //view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
         ourShader.setMat4("view", view);
@@ -384,16 +384,25 @@ glm::mat4 getLookAtMat(glm::vec3 position,glm::vec3 target,glm::vec3 worldUp)
     translation[3][1] = -position.y;
     translation[3][2] = -position.z;
     glm::mat4 rotation = glm::mat4(1.0f);
+    // rotation[0][0] = xaxis.x; // First column, first row
+    // rotation[1][0] = xaxis.y;
+    // rotation[2][0] = xaxis.z;
+    // rotation[0][1] = yaxis.x; // First column, second row
+    // rotation[1][1] = yaxis.y;
+    // rotation[2][1] = yaxis.z;
+    // rotation[0][2] = zaxis.x; // First column, third row
+    // rotation[1][2] = zaxis.y;
+    // rotation[2][2] = zaxis.z; 
     rotation[0][0] = xaxis.x; // First column, first row
-    rotation[1][0] = xaxis.y;
-    rotation[2][0] = xaxis.z;
-    rotation[0][1] = yaxis.x; // First column, second row
+    rotation[1][0] = yaxis.x;
+    rotation[2][0] = zaxis.x;
+    rotation[0][1] = xaxis.y; // First column, second row
     rotation[1][1] = yaxis.y;
-    rotation[2][1] = yaxis.z;
-    rotation[0][2] = zaxis.x; // First column, third row
-    rotation[1][2] = zaxis.y;
+    rotation[2][1] = zaxis.y;
+    rotation[0][2] = xaxis.z; // First column, third row
+    rotation[1][2] = yaxis.z;
     rotation[2][2] = zaxis.z; 
-
+    
     // Return lookAt matrix as combination of translation and rotation matrix
     return rotation * translation; // Remember to read from right to left (first translation then rotation)
 }
