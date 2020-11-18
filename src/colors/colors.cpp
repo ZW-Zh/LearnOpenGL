@@ -16,6 +16,8 @@ float lastFrame = 0.0f; // 上一帧的时间
 
 bool firstMouse = true;
 float lastX = 400, lastY = 300;
+//光照
+glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
 
 // camera
 Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
@@ -51,7 +53,10 @@ int main()
     glfwSetCursorPosCallback(window, mouse_callback);
     glfwSetScrollCallback(window, scroll_callback);
 
-    Shader ourShader("src/colors/shader.vs", "src/colors/shader.fs");
+    //立方体的着色器
+    Shader ourShader("src/colors/colors.vs", "src/colors/colors.fs");
+    //光源的着色器
+    Shader lightShader("src/colors/light_cube.vs", "src/colors/light_cube.fs");
 
     float vertices[] = {
         -0.5f, -0.5f, -0.5f, 
@@ -119,7 +124,6 @@ int main()
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
-    
     glEnable(GL_DEPTH_TEST);
 
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -136,7 +140,7 @@ int main()
         
         //渲染指令
         //设置清空屏幕所用的颜色，glClearColor：状态设置函数
-        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         /*
 		每次新的渲染前需要清屏，接受一个缓冲位来指定要清空的缓冲,清除深度缓冲
 		可能的缓冲位有GL_COLOR_BUFFER_BIT，GL_DEPTH_BUFFER_BIT和GL_STENCIL_BUFFER_BIT
@@ -144,8 +148,9 @@ int main()
 		*/
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-
         ourShader.use();
+        ourShader.setVec3("objectColor", 1.0f, 0.5f, 0.31f);
+        ourShader.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
 
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), 800.0f / 600.0f, 0.1f, 100.0f);
         ourShader.setMat4("projection", projection);
@@ -154,11 +159,24 @@ int main()
         glm::mat4 view = camera.GetViewMatrix();
         ourShader.setMat4("view", view);
         // with the uniform matrix set, draw the first container
-        glBindVertexArray(VAO);
+        
 
         glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
         ourShader.setMat4("model", model);
+
+        glBindVertexArray(VAO);
         //透视投影矩阵
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+
+        lightShader.use();
+        lightShader.setMat4("projection", projection);
+        lightShader.setMat4("view", view);
+        model = glm::mat4(1.0f);
+        model = glm::translate(model,lightPos);
+        model = glm::scale(model, glm::vec3(0.2f));
+        lightShader.setMat4("model", model);
+
+        glBindVertexArray(lightCubeVAO);
         glDrawArrays(GL_TRIANGLES, 0, 36);
 
         //检查并调用事件，交换缓冲
