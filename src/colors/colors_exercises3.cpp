@@ -54,7 +54,7 @@ int main()
     glfwSetScrollCallback(window, scroll_callback);
 
     //立方体的着色器
-    Shader ourShader("src/colors/colors.vs", "src/colors/colors.fs");
+    Shader ourShader("src/colors/color_exercises3.vs", "src/colors/color_exercises3.fs");
     //光源的着色器
     Shader lightShader("src/colors/light_cube.vs", "src/colors/light_cube.fs");
     //每个顶点增加了法向量
@@ -154,7 +154,7 @@ int main()
         ourShader.setVec3("objectColor", 1.0f, 0.5f, 0.31f);
         ourShader.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
         ourShader.setVec3("lightPos", lightPos);
-        ourShader.setVec3("viewPos", camera.Position);
+        //ourShader.setVec3("viewPos", camera.Position);
 
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), 800.0f / 600.0f, 0.1f, 100.0f);
         ourShader.setMat4("projection", projection);

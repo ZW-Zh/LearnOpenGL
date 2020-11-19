@@ -54,7 +54,7 @@ int main()
     glfwSetScrollCallback(window, scroll_callback);
 
     //立方体的着色器
-    Shader ourShader("src/colors/colors.vs", "src/colors/colors.fs");
+    Shader ourShader("src/colors/color_exercises4.vs", "src/colors/color_exercises4.fs");
     //光源的着色器
     Shader lightShader("src/colors/light_cube.vs", "src/colors/light_cube.fs");
     //每个顶点增加了法向量

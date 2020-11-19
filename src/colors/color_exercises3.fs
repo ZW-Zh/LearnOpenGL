@@ -3,12 +3,12 @@ out vec4 FragColor;
 
 in vec3 Normal;
 in vec3 FragPos;
+in vec3 LightPos;
 
 uniform vec3 objectColor;
 uniform vec3 lightColor;
-uniform vec3 lightPos;
 //摄像机观察位置 
-uniform vec3 viewPos;
+//uniform vec3 viewPos;
 
 void main()
 {   
@@ -22,7 +22,7 @@ void main()
     //法线向量
     vec3 norm = normalize(Normal);
     //光的方向向量=光源位置向量-片段位置向量
-    vec3 lightDir = normalize(lightPos - FragPos);
+    vec3 lightDir = normalize(LightPos - FragPos);
     //得到法向量和光向量夹角，防止夹角大于90变负数。
     float diff = max(dot(norm, lightDir), 0.0);
     //得到漫反射分量，夹角越大，漫反射分量越小
@@ -33,7 +33,7 @@ void main()
     //镜面强度
     float specularStrength = 0.5; 
     //视线方向向量  
-    vec3 viewDir = normalize(viewPos - FragPos);
+    vec3 viewDir = normalize(- FragPos);
     //reflect函数要求第一个向量是从光源指向片段位置的向量
     //reflect求反射向量
     vec3 reflectDir = reflect(-lightDir, norm);
