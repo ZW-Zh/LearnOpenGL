@@ -55,7 +55,7 @@ int main()
     glfwSetScrollCallback(window, scroll_callback);
 
     //立方体的着色器
-    Shader ourShader("src/lighting_maps/lighting_maps.vs", "src/lighting_maps/lighting_maps.fs");
+    Shader ourShader("src/lighting_maps/lighting_maps.vs", "src/lighting_maps/lighting_maps_exercises4.fs");
     //光源的着色器
     Shader lightShader("src/colors/light_cube.vs", "src/colors/light_cube.fs");
     //每个顶点增加了法向量
@@ -131,11 +131,12 @@ int main()
 
     unsigned int diffuseMap = loadTexture("src/lighting_maps/container2.png");
     unsigned int specularMap = loadTexture("src/lighting_maps/container2_specular.png");
+    unsigned int emissionMap = loadTexture("src/lighting_maps/matrix.jpg");
 
     ourShader.use();
     ourShader.setInt("material.diffuse", 0);
     ourShader.setInt("material.specular", 1);
-
+    ourShader.setInt("material.emission", 2);
     glEnable(GL_DEPTH_TEST);
 
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -165,6 +166,9 @@ int main()
 
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, specularMap);
+
+        glActiveTexture(GL_TEXTURE2);
+        glBindTexture(GL_TEXTURE_2D, emissionMap);
 
         ourShader.use();
         ourShader.setVec3("light.position", lightPos);

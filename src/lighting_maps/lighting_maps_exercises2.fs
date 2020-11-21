@@ -46,7 +46,7 @@ void main()
     vec3 reflectDir = reflect(-lightDir, norm);  
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
     //取样对应的颜色值并将它乘以光源的镜面强度。一个像素越「白」，乘积就会越大，物体的镜面光分量就会越亮
-    vec3 specular = light.specular * spec * vec3(texture(material.specular, TexCoords));  
+    vec3 specular = light.specular * spec * (vec3(1.0) - vec3(texture(material.specular, TexCoords)));  
 
     vec3 result = ambient + diffuse + specular;
     FragColor = vec4(result, 1.0);
