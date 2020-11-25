@@ -83,7 +83,7 @@ int main()
 
     // load models
     // -----------
-    Model ourModel("src/nanosuit/nanosuit.obj");
+    Model ourModel("src/backpack/backpack.obj");
 
     //光源的着色器
     Shader lightShader("src/colors/light_cube.vs", "src/colors/light_cube.fs");
@@ -172,7 +172,7 @@ float vertices[] = {
         // don't forget to enable shader before setting uniforms
         ourShader.use();
         lightPos.x = 1.0f + sin(glfwGetTime()) * 2.0f;
-        lightPos.y = (glfwGetTime() / 2.0f) * 1.0f;
+        lightPos.y = sin(glfwGetTime() / 2.0f) * 1.0f;
         
         ourShader.setVec3("light.position", lightPos);
         ourShader.setVec3("viewPos", camera.Position);

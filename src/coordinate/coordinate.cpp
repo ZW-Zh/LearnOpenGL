@@ -61,6 +61,7 @@ int main()
     //     1, 2, 3  // second triangle
     // };
     float vertices[] = {
+                            //纹理坐标
         -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
         0.5f, -0.5f, -0.5f, 1.0f, 0.0f,
         0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
@@ -189,6 +190,9 @@ int main()
     ourShader.use();                                                // 不要忘记在设置uniform变量之前激活着色器程序！
     glUniform1i(glGetUniformLocation(ourShader.ID, "texture1"), 0); // 手动设置纹理单元
     ourShader.setInt("texture2", 1);                                // 或者使用着色器类设置
+    //OpenGL存储它的所有深度信息于一个Z缓冲(Z-buffer)中，也被称为深度缓冲(Depth Buffer)。
+    //GLFW会自动为你生成这样一个缓冲（就像它也有一个颜色缓冲来存储输出图像的颜色）。
+    //深度值存储在每个片段里面（作为片段的z值），当片段想要输出它的颜色时，OpenGL会将它的深度值和z缓冲进行比较，如果当前的片段在其它片段之后，它将会被丢弃，否则将会覆盖。这个过程称为深度测试(Depth Testing)，它是由OpenGL自动完成的。
     //开启深度测试
     glEnable(GL_DEPTH_TEST);
 
