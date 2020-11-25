@@ -1,1 +1,1 @@
-g++ -g -std=c++17  -I./include -L./lib src/hello_triangle.cpp -o main -lglad -lglfw3dll
+g++ -g -std=c++17  -I./include -L./lib src/model/model.cpp -o main -lglad -lglfw3dll -llibassimp
