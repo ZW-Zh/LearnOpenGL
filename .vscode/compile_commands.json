@@ -1,0 +1,11 @@
+[
+{
+  "directory": "c:\\Project\\LearnOpenGL",
+  "arguments": ["C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.35.32215\\bin\\HostX64\\x64\\cl.exe", "/c", "/nologo", "/Zi", "/FS", "/Fdbuild\\windows\\x64\\debug\\compile.LearnOpenGL.pdb", "/Od", "/Iinclude", "/EHsc", "/Fobuild\\.objs\\LearnOpenGL\\windows\\x64\\debug\\src\\glad.c.obj", "src\\glad.c"],
+  "file": "src\\glad.c"
+},
+{
+  "directory": "c:\\Project\\LearnOpenGL",
+  "arguments": ["C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.35.32215\\bin\\HostX64\\x64\\cl.exe", "/c", "/nologo", "/Zi", "/FS", "/Fdbuild\\windows\\x64\\debug\\compile.LearnOpenGL.pdb", "/Od", "/std:c++17", "/Iinclude", "/EHsc", "/Fobuild\\.objs\\LearnOpenGL\\windows\\x64\\debug\\src\\hello_window.cpp.obj", "src\\hello_window.cpp"],
+  "file": "src\\hello_window.cpp"
+}]
